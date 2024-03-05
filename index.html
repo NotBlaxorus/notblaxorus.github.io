@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCP Directory Terminal</title>
+    <style>
+        body {
+            background-color: black;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .terminal {
+            background-color: black;
+            border: 3px solid #33ff33;
+            padding: 20px;
+            padding-bottom: 100px; /* Increased bottom padding for extra spacing */
+            width: 80%;
+            max-width: 900px;
+            margin: auto;
+            box-shadow: 0 0 20px #33ff33;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            position: relative;
+            line-height: 1.5;
+        }
+        h1, h2 {
+            font-size: 1.5em;
+            margin: 20px 0 10px; /* Adjusted to add more space around headings */
+            padding: 5px 0;
+            border-bottom: 1px solid #33ff33;
+        }
+        h2 {
+            font-size: 1.2em;
+        }
+        p, ul {
+            margin: 20px 0; /* Increased margin for paragraphs and lists */
+            padding-left: 20px;
+        }
+        ul {
+            list-style-type: none;
+            margin-top: 30px; /* Added extra space above lists for separation from text */
+        }
+        a {
+            color: #33ff33;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <!-- Dynamic content will be inserted here -->
+    </div>
+
+    <script>
+        const elements = [
+            { text: "SCP Directory Terminal", type: 'title' },
+            { text: "Welcome to the SCP Directory Terminal. Use the links below to navigate through the SCP database.\n", type: 'paragraph' },
+            { text: "SCP Database", type: 'heading' },
+            { listContent: [
+                { name: "SCP-049", description: "The Plague Doctor", link: "https://example.com/scp-049" },
+                { name: "SCP-096", description: "Shy Guy", link: "https://example.com/scp-096" },
+                { name: "SCP-106", description: "Radical Larry", link: "https://example.com/scp-106" }
+            ], type: 'list' },
+            { text: "Commands", type: 'heading' },
+            { listContent: [
+                { command: "list", description: "Display all SCP entries" },
+                { command: "help", description: "Show available commands" }
+            ], type: 'list' }
+        ];
+
+        let currentIndex = 0;
+        const typingDelay = 50;
+        const terminal = document.querySelector('.terminal');
+
+        function createAndAppendElement(type) {
+            let element;
+            switch (type) {
+                case 'title':
+                case 'heading':
+                    element = document.createElement('h2');
+                    break;
+                case 'paragraph':
+                    element = document.createElement('p');
+                    break;
+                case 'list':
+                    element = document.createElement('ul');
+                    break;
+            }
+            terminal.appendChild(element);
+            return element;
+        }
+
+        function typeText(element, text) {
+            return new Promise(resolve => {
+                let charIndex = 0;
+                function typeChar() {
+                    if (charIndex < text.length) {
+                        element.textContent += text[charIndex++];
+                        setTimeout(typeChar, typingDelay);
+                    } else {
+                        resolve();
+                    }
+                }
+                typeChar();
+            });
+        }
+
+        async function typeList(element, items) {
+            for (let item of items) {
+                const listItem = document.createElement('li');
+                if (typeof item === 'string') {
+                    await typeText(listItem, item);
+                } else if (item.name && item.description) {
+                    // Embedding links directly into the text
+                    const link = document.createElement('a');
+                    link.href = item.link;
+                    link.target = '_blank';
+                    link.innerHTML = `${item.name} - "${item.description}"`;
+                    listItem.appendChild(link);
+                } else if (item.command && item.description) {
+                    const commandText = `${item.command} - ${item.description}`;
+                    await typeText(listItem, commandText);
+                }
+                element.appendChild(listItem);
+                await new Promise(resolve => setTimeout(resolve, typingDelay * 10));
+            }
+        }
+
+        async function processElements() {
+            for (let element of elements) {
+                const domElement = createAndAppendElement(element.type);
+                if (element.text) {
+                    await typeText(domElement, element.text);
+                } else if (element.listContent) {
+                    await typeList(domElement, element.listContent);
+                }
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        window.onload = function() {
+            processElements();
+        };
+    </script>
+</body>
+</html>
