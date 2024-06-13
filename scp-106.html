@@ -16,12 +16,13 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            overflow: hidden; /* Ensure no overflow */
         }
         .terminal {
             background-color: black;
             border: 3px solid #33ff33;
             padding: 10px;
-            width: 65%; /* Further adjusted width */
+            width: 65%; /* Adjusted width */
             max-width: 65vw; /* Adjusted max-width */
             max-height: 90vh; /* Adjusted max-height */
             margin: auto;
@@ -32,6 +33,7 @@
             line-height: 1.5;
             text-align: center;
             overflow: hidden;
+            transform-origin: top left; /* Ensure scaling from top-left corner */
         }
         canvas {
             display: block;
@@ -51,12 +53,21 @@
     </style>
 </head>
 <body>
-    <div class="terminal">
+    <div class="terminal" id="terminal">
         <h2>SCP-106 Document</h2>
         <div class="drawing-status" id="drawingStatus">Drawing</div>
         <canvas id="scp106Canvas"></canvas>
     </div>
     <script>
+        function scalePage() {
+            const terminal = document.getElementById('terminal');
+            const scale = Math.min(
+                window.innerWidth / terminal.offsetWidth,
+                window.innerHeight / terminal.offsetHeight
+            );
+            terminal.style.transform = `scale(${scale})`;
+        }
+
         window.onload = function() {
             const canvas = document.getElementById('scp106Canvas');
             const ctx = canvas.getContext('2d');
@@ -97,14 +108,13 @@
                     } else {
                         drawingComplete = true;
                         drawingStatus.textContent = 'Drawing complete';
+                        scalePage(); // Scale page after drawing is complete
                     }
                 }
                 drawLine();
             };
 
-            window.addEventListener('resize', function() {
-                img.onload();
-            });
+            window.addEventListener('resize', scalePage);
         };
     </script>
 </body>
