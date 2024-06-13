@@ -68,16 +68,20 @@
             let scaleWidth = screenWidth / baseWidth;
             let scaleHeight = screenHeight / baseHeight;
 
-            if (screenWidth >= baseWidth && screenHeight >= baseHeight) {
-                scaleWidth = Math.min(1, scaleWidth);  // Scale up with resolution
-                scaleHeight = Math.min(1, scaleHeight); // Scale up with resolution
+            // Ensure scaling is appropriate for larger screens
+            if (screenWidth > baseWidth && screenHeight > baseHeight) {
+                scaleWidth = 1;
+                scaleHeight = 1;
             } else {
                 scaleWidth = Math.min(1, scaleWidth);
                 scaleHeight = Math.min(1, scaleHeight);
             }
 
             const scale = Math.min(scaleWidth, scaleHeight);
-            terminal.style.transform = `scale(${scale})`;
+            terminal.style.transform = `scale(${scale}) translate(-50%, -50%)`;
+            terminal.style.position = 'absolute';
+            terminal.style.top = '50%';
+            terminal.style.left = '50%';
         }
 
         window.onload = function() {
