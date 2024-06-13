@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCP-106 Research Document</title>
+    <style>
+        body {
+            background-color: black;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px 20px 0 20px; /* Removed bottom padding */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Align content vertically */
+        }
+        .terminal {
+            background-color: black;
+            border: 3px solid #33ff33;
+            padding: 10px; /* Reduced padding */
+            width: 80%; /* Reverted width */
+            max-width: 900px; /* Reverted max-width */
+            max-height: 90vh; /* Adjusted height */
+            margin: auto;
+            box-shadow: 0 0 20px #33ff33;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            position: relative;
+            line-height: 1.5;
+            text-align: center; /* Center text inside the terminal */
+            overflow: hidden; /* Hide overflow */
+        }
+        canvas {
+            display: block;
+            margin: auto;
+            image-rendering: pixelated; /* For a pixelated effect */
+            background-color: black; /* Black background before the image draws in */
+            max-width: 100%; /* Ensure canvas fits within the box */
+            max-height: 100%; /* Ensure canvas fits within the box */
+        }
+        .drawing-status {
+            color: #ff5733; /* Different color for the drawing status */
+            margin-top: 5px; /* Reduced margin */
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <h2>SCP-106 Document</h2>
+        <div class="drawing-status" id="drawingStatus">Drawing</div>
+        <canvas id="scp106Canvas"></canvas>
+    </div>
+    <script>
+        window.onload = function() {
+            const canvas = document.getElementById('scp106Canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = 'pages/2.png';
+
+            const drawingStatus = document.getElementById('drawingStatus');
+            let dotCount = 0;
+            let drawingComplete = false;
+
+            function updateDrawingStatus() {
+                if (!drawingComplete) {
+                    drawingStatus.textContent = 'Drawing' + '.'.repeat(dotCount);
+                    dotCount = (dotCount + 1) % 4; // Cycle through 0, 1, 2, 3 dots
+                }
+            }
+
+            setInterval(updateDrawingStatus, 500); // Update the drawing status every 500ms
+
+            img.onload = function() {
+                const width = img.width * 0.9; // Scale down slightly more
+                const height = img.height * 0.9; // Scale down slightly more
+                canvas.width = width;
+                canvas.height = height;
+
+                let y = 0;
+
+                function drawLine() {
+                    if (y < height) {
+                        ctx.drawImage(img, 0, y / 0.9, img.width, 1, 0, y, width, 1);
+                        y++;
+                        setTimeout(drawLine, 1); // Faster delay for speed
+                    } else {
+                        drawingComplete = true;
+                        drawingStatus.textContent = 'Drawing complete';
+                    }
+                }
+                drawLine();
+            };
+        };
+    </script>
+</body>
+</html>
