@@ -59,10 +59,10 @@
     </style>
 </head>
 <body>
-    <div class="terminal" id="terminal">
-        <h2>SCP-106 Document</h2>
-        <div class="drawing-status" id="drawingStatus">Drawing</div>
-        <div class="terminal-content" id="terminalContent">
+    <div class="terminal-content" id="terminalContent">
+        <div class="terminal" id="terminal">
+            <h2>SCP-106 Document</h2>
+            <div class="drawing-status" id="drawingStatus">Drawing</div>
             <canvas id="scp106Canvas"></canvas>
         </div>
     </div>
@@ -87,9 +87,9 @@
             setInterval(updateDrawingStatus, 500); // Update the drawing status every 500ms
 
             img.onload = function() {
-                const terminalContent = document.getElementById('terminalContent');
-                const maxCanvasWidth = terminalContent.clientWidth;
-                const maxCanvasHeight = terminalContent.clientHeight;
+                const terminal = document.querySelector('.terminal');
+                const maxCanvasWidth = terminal.clientWidth;
+                const maxCanvasHeight = terminal.clientHeight;
                 
                 // Fit the image within the terminal, allowing for scrolling if necessary
                 const aspectRatio = img.width / img.height;
