@@ -30,7 +30,17 @@
             position: relative;
             line-height: 1.5;
             text-align: center;
-            overflow: auto; /* Allow scrolling */
+            overflow: hidden; /* Hide scroll bar */
+        }
+        .terminal-content {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll; /* Allow vertical scrolling */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .terminal-content::-webkit-scrollbar { 
+            display: none;  /* Safari and Chrome */
         }
         canvas {
             display: block;
@@ -52,7 +62,9 @@
     <div class="terminal" id="terminal">
         <h2>SCP-106 Document</h2>
         <div class="drawing-status" id="drawingStatus">Drawing</div>
-        <canvas id="scp106Canvas"></canvas>
+        <div class="terminal-content" id="terminalContent">
+            <canvas id="scp106Canvas"></canvas>
+        </div>
     </div>
     <script>
         window.onload = function() {
@@ -75,12 +87,15 @@
             setInterval(updateDrawingStatus, 500); // Update the drawing status every 500ms
 
             img.onload = function() {
-                const terminal = document.querySelector('.terminal');
-                const maxCanvasWidth = terminal.clientWidth; // Fixed width
+                const terminalContent = document.getElementById('terminalContent');
+                const maxCanvasWidth = terminalContent.clientWidth;
+                const maxCanvasHeight = terminalContent.clientHeight;
+                
+                // Fit the image within the terminal, allowing for scrolling if necessary
                 const aspectRatio = img.width / img.height;
-                const height = terminal.clientHeight * 1.2; // Adjusted height to allow scrolling
+                const width = maxCanvasWidth;
+                const height = width / aspectRatio;
 
-                const width = height * aspectRatio;
                 canvas.width = width;
                 canvas.height = height;
 
