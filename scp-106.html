@@ -15,7 +15,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             overflow: hidden; /* Ensure no overflow */
         }
         .terminal {
@@ -61,10 +60,9 @@
     <script>
         function scalePage() {
             const terminal = document.getElementById('terminal');
-            const scale = Math.min(
-                window.innerWidth / terminal.offsetWidth,
-                window.innerHeight / terminal.offsetHeight
-            );
+            const scaleWidth = window.innerWidth / terminal.offsetWidth;
+            const scaleHeight = window.innerHeight / terminal.offsetHeight;
+            const scale = Math.min(scaleWidth, scaleHeight);
             terminal.style.transform = `scale(${scale})`;
         }
 
@@ -115,6 +113,7 @@
             };
 
             window.addEventListener('resize', scalePage);
+            scalePage(); // Initial scale when the page loads
         };
     </script>
 </body>
