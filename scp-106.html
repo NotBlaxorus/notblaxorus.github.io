@@ -60,8 +60,22 @@
     <script>
         function scalePage() {
             const terminal = document.getElementById('terminal');
-            const scaleWidth = window.innerWidth / terminal.offsetWidth;
-            const scaleHeight = window.innerHeight / terminal.offsetHeight;
+            const baseWidth = 1366;
+            const baseHeight = 768;
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            let scaleWidth = screenWidth / baseWidth;
+            let scaleHeight = screenHeight / baseHeight;
+
+            if (screenWidth >= baseWidth && screenHeight >= baseHeight) {
+                scaleWidth = Math.min(1, scaleWidth);  // Scale up with resolution
+                scaleHeight = Math.min(1, scaleHeight); // Scale up with resolution
+            } else {
+                scaleWidth = Math.min(1, scaleWidth);
+                scaleHeight = Math.min(1, scaleHeight);
+            }
+
             const scale = Math.min(scaleWidth, scaleHeight);
             terminal.style.transform = `scale(${scale})`;
         }
