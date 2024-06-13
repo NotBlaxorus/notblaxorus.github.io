@@ -10,40 +10,42 @@
             color: #33ff33;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 20px 20px 0 20px; /* Removed bottom padding */
+            padding: 20px;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column; /* Align content vertically */
+            flex-direction: column;
         }
         .terminal {
             background-color: black;
             border: 3px solid #33ff33;
-            padding: 10px; /* Reduced padding */
-            width: 80%; /* Reverted width */
-            max-width: 900px; /* Reverted max-width */
-            max-height: 90vh; /* Adjusted height */
+            padding: 10px;
+            width: 65%; /* Further adjusted width */
+            max-width: 65vw; /* Adjusted max-width */
+            max-height: 90vh; /* Adjusted max-height */
             margin: auto;
             box-shadow: 0 0 20px #33ff33;
             white-space: pre-wrap;
             overflow-wrap: break-word;
             position: relative;
             line-height: 1.5;
-            text-align: center; /* Center text inside the terminal */
-            overflow: hidden; /* Hide overflow */
+            text-align: center;
+            overflow: hidden;
         }
         canvas {
             display: block;
             margin: auto;
-            image-rendering: pixelated; /* For a pixelated effect */
-            background-color: black; /* Black background before the image draws in */
-            max-width: 100%; /* Ensure canvas fits within the box */
-            max-height: 100%; /* Ensure canvas fits within the box */
+            image-rendering: pixelated;
+            background-color: black;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
         }
         .drawing-status {
-            color: #ff5733; /* Different color for the drawing status */
-            margin-top: 5px; /* Reduced margin */
+            color: #ff5733;
+            margin-top: 5px;
             font-size: 1.2em;
         }
     </style>
@@ -75,8 +77,13 @@
             setInterval(updateDrawingStatus, 500); // Update the drawing status every 500ms
 
             img.onload = function() {
-                const width = img.width * 0.9; // Scale down slightly more
-                const height = img.height * 0.9; // Scale down slightly more
+                const terminal = document.querySelector('.terminal');
+                const maxCanvasWidth = terminal.clientWidth; // Removed padding
+                const maxCanvasHeight = terminal.clientHeight; // Removed padding
+                const scale = Math.min(maxCanvasWidth / img.width, maxCanvasHeight / img.height) * 1.75; // Increase scale by 75%
+
+                const width = img.width * scale;
+                const height = img.height * scale;
                 canvas.width = width;
                 canvas.height = height;
 
@@ -84,7 +91,7 @@
 
                 function drawLine() {
                     if (y < height) {
-                        ctx.drawImage(img, 0, y / 0.9, img.width, 1, 0, y, width, 1);
+                        ctx.drawImage(img, 0, y / scale, img.width, 1, 0, y, width, 1);
                         y++;
                         setTimeout(drawLine, 1); // Faster delay for speed
                     } else {
@@ -94,6 +101,10 @@
                 }
                 drawLine();
             };
+
+            window.addEventListener('resize', function() {
+                img.onload();
+            });
         };
     </script>
 </body>
