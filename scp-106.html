@@ -21,9 +21,8 @@
             background-color: black;
             border: 3px solid #33ff33;
             padding: 10px;
-            width: 65%; /* Adjusted width */
-            max-width: 65vw; /* Adjusted max-width */
-            max-height: 90vh; /* Adjusted max-height */
+            width: 65vw; /* Fixed width */
+            height: 100vh; /* Fit height */
             margin: auto;
             box-shadow: 0 0 20px #33ff33;
             white-space: pre-wrap;
@@ -31,8 +30,7 @@
             position: relative;
             line-height: 1.5;
             text-align: center;
-            overflow: hidden;
-            transform-origin: top left; /* Ensure scaling from top-left corner */
+            overflow: auto; /* Allow scrolling */
         }
         canvas {
             display: block;
@@ -40,9 +38,7 @@
             image-rendering: pixelated;
             background-color: black;
             max-width: 100%;
-            max-height: 100%;
             width: auto;
-            height: auto;
         }
         .drawing-status {
             color: #ff5733;
@@ -58,32 +54,6 @@
         <canvas id="scp106Canvas"></canvas>
     </div>
     <script>
-        function scalePage() {
-            const terminal = document.getElementById('terminal');
-            const baseWidth = 1366;
-            const baseHeight = 768;
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-
-            let scaleWidth = screenWidth / baseWidth;
-            let scaleHeight = screenHeight / baseHeight;
-
-            // Ensure scaling is appropriate for larger screens
-            if (screenWidth > baseWidth && screenHeight > baseHeight) {
-                scaleWidth = 1;
-                scaleHeight = 1;
-            } else {
-                scaleWidth = Math.min(1, scaleWidth);
-                scaleHeight = Math.min(1, scaleHeight);
-            }
-
-            const scale = Math.min(scaleWidth, scaleHeight);
-            terminal.style.transform = `scale(${scale}) translate(-50%, -50%)`;
-            terminal.style.position = 'absolute';
-            terminal.style.top = '50%';
-            terminal.style.left = '50%';
-        }
-
         window.onload = function() {
             const canvas = document.getElementById('scp106Canvas');
             const ctx = canvas.getContext('2d');
@@ -107,7 +77,7 @@
                 const terminal = document.querySelector('.terminal');
                 const maxCanvasWidth = terminal.clientWidth; // Removed padding
                 const maxCanvasHeight = terminal.clientHeight; // Removed padding
-                const scale = Math.min(maxCanvasWidth / img.width, maxCanvasHeight / img.height) * 1.75; // Increase scale by 75%
+                const scale = Math.min(maxCanvasWidth / img.width, maxCanvasHeight / img.height); 
 
                 const width = img.width * scale;
                 const height = img.height * scale;
@@ -124,14 +94,10 @@
                     } else {
                         drawingComplete = true;
                         drawingStatus.textContent = 'Drawing complete';
-                        scalePage(); // Scale page after drawing is complete
                     }
                 }
                 drawLine();
             };
-
-            window.addEventListener('resize', scalePage);
-            scalePage(); // Initial scale when the page loads
         };
     </script>
 </body>
