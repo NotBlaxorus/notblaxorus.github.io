@@ -10,19 +10,18 @@
             color: #33ff33;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Ensure no overflow */
+            overflow: hidden;
         }
         .terminal {
             background-color: black;
             border: 3px solid #33ff33;
-            padding: 10px;
-            width: 65vw; /* Fixed width */
-            height: 85vh; /* Adjusted height to fit most of the screen */
+            width: 65vw;
+            height: 85vh;
             margin: auto;
             box-shadow: 0 0 20px #33ff33;
             white-space: pre-wrap;
@@ -30,17 +29,20 @@
             position: relative;
             line-height: 1.5;
             text-align: center;
-            overflow: hidden; /* Hide scroll bar */
+            overflow-y: scroll;
+        }
+        .terminal::-webkit-scrollbar {
+            display: none;
+        }
+        .terminal {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         .terminal-content {
-            width: 100%;
-            height: 100%;
-            overflow-y: scroll; /* Allow vertical scrolling */
-            -ms-overflow-style: none;  /* Internet Explorer 10+ */
-            scrollbar-width: none;  /* Firefox */
-        }
-        .terminal-content::-webkit-scrollbar { 
-            display: none;  /* Safari and Chrome */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px; /* Adjust this value to move the content higher */
         }
         canvas {
             display: block;
@@ -48,7 +50,7 @@
             image-rendering: pixelated;
             background-color: black;
             max-width: 100%;
-            width: auto;
+            width: 50%;
             height: auto;
         }
         .drawing-status {
@@ -56,13 +58,30 @@
             margin-top: 5px;
             font-size: 1.2em;
         }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0; /* Center the button horizontally */
+            border: 2px solid #33ff33;
+            background-color: black;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #33ff33;
+            color: black;
+        }
     </style>
 </head>
 <body>
-    <div class="terminal-content" id="terminalContent">
-        <div class="terminal" id="terminal">
+    <div class="terminal" id="terminal">
+        <div class="terminal-content">
+            <a class="back-button" href="javascript:history.back()">Back</a>
             <h2>SCP-106 Document</h2>
-            <div class="drawing-status" id="drawingStatus">Drawing</div>
+            <div class="drawing-status" id="drawingStatus">Drawing...</div>
             <canvas id="scp106Canvas"></canvas>
         </div>
     </div>
@@ -87,25 +106,21 @@
             setInterval(updateDrawingStatus, 500); // Update the drawing status every 500ms
 
             img.onload = function() {
-                const terminal = document.querySelector('.terminal');
-                const maxCanvasWidth = terminal.clientWidth;
-                const maxCanvasHeight = terminal.clientHeight;
-                
-                // Fit the image within the terminal, allowing for scrolling if necessary
+                const maxCanvasWidth = canvas.parentElement.clientWidth * 0.5;
                 const aspectRatio = img.width / img.height;
-                const width = maxCanvasWidth;
-                const height = width / aspectRatio;
+                const scaledWidth = maxCanvasWidth;
+                const scaledHeight = scaledWidth / aspectRatio;
 
-                canvas.width = width;
-                canvas.height = height;
+                canvas.width = scaledWidth;
+                canvas.height = scaledHeight;
 
                 let y = 0;
 
                 function drawLine() {
-                    if (y < height) {
-                        ctx.drawImage(img, 0, y / (height / img.height), img.width, 1, 0, y, width, 1);
+                    if (y < scaledHeight) {
+                        ctx.drawImage(img, 0, y / (scaledHeight / img.height), img.width, 1, 0, y, scaledWidth, 1);
                         y++;
-                        setTimeout(drawLine, 1); // Faster delay for speed
+                        requestAnimationFrame(drawLine); // Use requestAnimationFrame for smoother animation
                     } else {
                         drawingComplete = true;
                         drawingStatus.textContent = 'Drawing complete';
