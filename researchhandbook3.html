@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Handbook / Page 3</title>
+    <style>
+        body {
+            background-color: black;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .terminal {
+            background-color: black;
+            border: 3px solid #33ff33;
+            width: 65vw;
+            height: 85vh;
+            margin: auto;
+            box-shadow: 0 0 20px #33ff33;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            position: relative;
+            line-height: 1.5;
+            text-align: center;
+            overflow-y: scroll;
+        }
+        .terminal::-webkit-scrollbar {
+            display: none;
+        }
+        .terminal {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .terminal-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px; /* Adjust this value to move the content higher */
+        }
+        canvas {
+            display: block;
+            margin: auto;
+            image-rendering: pixelated;
+            background-color: black;
+            max-width: 100%;
+            width: 50%;
+            height: auto;
+        }
+        .drawing-status {
+            color: #ff5733;
+            margin-top: 5px;
+            font-size: 1.2em;
+        }
+        .back-button, .next-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px 0; /* Center the button horizontally */
+            border: 2px solid #33ff33;
+            background-color: black;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .back-button:hover, .next-button:hover {
+            background-color: #33ff33;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal" id="terminal">
+        <div class="terminal-content">
+            <a class="back-button" href="javascript:history.back()">Back</a>
+            <h2>Research Handbook / Page 3</h2>
+            <div class="drawing-status" id="drawingStatus">Drawing...</div>
+            <canvas id="scp106Canvas"></canvas>
+            <a class="next-button" href="researchhandbook4.html">Next</a>
+        </div>
+    </div>
+    <script>
+        window.onload = function() {
+            const canvas = document.getElementById('scp106Canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = 'pages/research/3.png';
+
+            const drawingStatus = document.getElementById('drawingStatus');
+            let dotCount = 0;
+            let drawingComplete = false;
+
+            function updateDrawingStatus() {
+                if (!drawingComplete) {
+                    drawingStatus.textContent = 'Drawing' + '.'.repeat(dotCount);
+                    dotCount = (dotCount + 1) % 4; // Cycle through 0, 1, 2, 3 dots
+                }
+            }
+
+            setInterval(updateDrawingStatus, 500); // Update the drawing status every 500ms
+
+            img.onload = function() {
+                const maxCanvasWidth = canvas.parentElement.clientWidth * 0.5;
+                const aspectRatio = img.width / img.height;
+                const scaledWidth = maxCanvasWidth;
+                const scaledHeight = scaledWidth / aspectRatio;
+
+                canvas.width = scaledWidth;
+                canvas.height = scaledHeight;
+
+                let y = 0;
+
+                function drawLine() {
+                    if (y < scaledHeight) {
+                        ctx.drawImage(img, 0, y / (scaledHeight / img.height), img.width, 1, 0, y, scaledWidth, 1);
+                        y++;
+                        requestAnimationFrame(drawLine); // Use requestAnimationFrame for smoother animation
+                    } else {
+                        drawingComplete = true;
+                        drawingStatus.textContent = 'Drawing complete';
+                    }
+                }
+                drawLine();
+            };
+        };
+    </script>
+</body>
+</html>
