@@ -70,10 +70,15 @@
             { text: "Welcome to the SCP Directory Terminal. Use the links below to navigate through the SCP database.\n", type: 'paragraph' },
             { text: "SCP Database", type: 'heading' },
             { listContent: [
-                { name: "SCP-049", description: "The Plague Doctor", link: "https://scp-wiki.wikidot.com/scp-049" },
-                { name: "SCP-096", description: "Shy Guy", link: "https://example.com/scp-096" },
+                { name: "SCP-049", description: "The Plague Doctor", link: "https://notblaxorus.github.io/scp-049.html" },
+                { name: "SCP-096", description: "Shy Guy", link: "https://notblaxorus.github.io/scp-096.html" },
                 { name: "SCP-106", description: "Radical Larry", link: "https://notblaxorus.github.io/scp-106.html" },
-                { name: "View", description: "all entries", link: "https://example.com/scp-106" }
+                { name: "View", description: "all entries", link: "https://notblaxorus.github.io/all-scp.html" }
+            ], type: 'list' },
+            { text: "Site Handbooks Database", type: 'heading' },
+            { listContent: [
+                { name: "GENSEC Handbook", description: "", link: "https://example.com/gensec-handbook" },
+                { name: "Research Handbook", description: "", link: "researchhandbook1.html" }
             ], type: 'list' }
         ];
 
@@ -124,6 +129,12 @@
                     const link = document.createElement('a');
                     link.href = item.link;
                     link.innerHTML = `${item.name} - "${item.description}"`;
+                    listItem.appendChild(link);
+                } else if (item.name) {
+                    // If there's no description, just show the name
+                    const link = document.createElement('a');
+                    link.href = item.link;
+                    link.innerHTML = item.name;
                     listItem.appendChild(link);
                 }
                 element.appendChild(listItem);
